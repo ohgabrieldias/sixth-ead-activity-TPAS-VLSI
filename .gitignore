@@ -1,0 +1,55 @@
+# Arquivos de saída e diretórios de ferramentas de simulação e síntese
+*.vvp
+*.vpi
+*.vcd
+*.out
+*.so
+*.dll
+simv/
+modelsim/
+quartus_output/
+vivado_output/
+
+# Arquivos de configuração de ferramentas
+*.qpf
+*.xpr
+*.tcl
+
+# Arquivos de backup ou temporários
+*~
+*.bak
+*.swp
+*.swo
+*.tmp
+*.log
+*.dmp
+*.dump
+
+# Diretórios de configuração de editores/IDEs
+.vscode/
+.idea/
+.sublime-project
+.sublime-workspace
+.vim/
+
+# Arquivos de documentação
+*.pdf
+*.doc
+*.txt
+*.md
+
+# Resultados de simulação
+coverage/
+sim_results/
+waveforms/
+
+# Arquivos de cache ou histórico
+.cache/
+.history/
+.history_*
+*.mti
+
+# Arquivos de registro de erros
+*.rpt
+*.err
+*.syr
