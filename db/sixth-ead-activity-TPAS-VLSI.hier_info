@@ -1,0 +1,35 @@
+|game_leds_x_buttons
+osc_clk => count_round[0].CLK
+osc_clk => count_round[1].CLK
+osc_clk => count_round[2].CLK
+osc_clk => led[0]~reg0.CLK
+osc_clk => led[1]~reg0.CLK
+osc_clk => led[2]~reg0.CLK
+osc_clk => led[3]~reg0.CLK
+osc_clk => lfsr[1].CLK
+osc_clk => padrao[12].CLK
+osc_clk => padrao[13].CLK
+osc_clk => padrao[14].CLK
+osc_clk => padrao[15].CLK
+reset_n => count_round[0].ACLR
+reset_n => count_round[1].ACLR
+reset_n => count_round[2].ACLR
+reset_n => lfsr[1].ACLR
+reset_n => padrao[12].ACLR
+reset_n => padrao[13].ACLR
+reset_n => padrao[14].ACLR
+reset_n => padrao[15].ACLR
+reset_n => led[3]~reg0.ENA
+reset_n => led[2]~reg0.ENA
+reset_n => led[1]~reg0.ENA
+reset_n => led[0]~reg0.ENA
+button[0] => ~NO_FANOUT~
+button[1] => ~NO_FANOUT~
+button[2] => ~NO_FANOUT~
+button[3] => ~NO_FANOUT~
+led[0] <= led[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+led[1] <= led[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+led[2] <= led[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+led[3] <= led[3]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+
+

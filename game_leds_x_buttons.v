@@ -1,73 +1,62 @@
 module game_leds_x_buttons (
     input osc_clk,           // Sinal de clock
     input reset_n,           // Sinal de reset
-    input [3:0] button,      // BotÃµes (um para cada LED)
+    input [3:0] button,      // Botões (um para cada LED)
     output reg [3:0] led    // LEDs (um para cada botÃ£o)
 );
 
-reg [3:0] pattern;          // PadrÃ£o gerado pela arquitetura
-reg [3:0] user_input;       // PadrÃ£o inserido pelo usuÃ¡rio
-reg [2:0] pattern_pos;      // PosiÃ§Ã£o atual no padrÃ£o
-reg [2:0] correct_pos;      // PosiÃ§Ã£o correta no padrÃ£o
+integer i;
 
-reg [2:0] rnd_sel;          // SeleÃ§Ã£o aleatÃ³ria de LEDs
-reg [2:0] rnd_sel_count; // Contador para simular aleatoriedade
-      
-reg game_active;            // Indica se o jogo estÃ¡ ativo
+reg [15:0] padrao;
+reg [3:0] entrada_usuario[15:0]; // Entrada do usuário
+reg [3:0] qtd_digitos_corretos;  // Quantidade de dígitos corretos
+reg [3:0] subconjunto;
+reg [2:0] rnd_sel;          // Seleção aleatória de LEDs
+reg [2:0] count_round;      // Contador de rodadas
 
-// Contadores
-reg [3:0] round_count;      // Conta as rodadas
-reg [3:0] correct_count;    // Conta os acertos consecutivos
+// Clock com uma frequência de 1/50 MHz=T  T=20×10 −9s
+// Quantidade de ciclos para 1s: 1/20×10 −9s=50×10 6 ciclos
+reg [25:0] count;           // Contador de tempo para contar até 50000000
+reg [15:0] lfsr;            // Linear Feedback Shift Register for random number generation
 
-reg [26:0] count;           // Contador de tempo
 
 always @(posedge osc_clk or posedge reset_n)
     begin
         if (reset_n)
             begin
-                pattern <= 4'b0;
-                user_input <= 4'b0;
-                pattern_pos <= 3'b0;
-                correct_pos <= 3'b0;
-                rnd_sel <= 3'b0;
-                count <= 0;
+                padrao <= 4'b0;
+                subconjunto <= 4'b0;
+                count_round <= 3'b0;
+                count <= 25'd0;
+                lfsr <= 16'hACE1; // Initial value for LFSR
             end
-        else 
-            begin
-                if (game_active)
-                    begin
-                        // Passo 1: Piscar cada LED do padrÃ£o
-                        if (count == 26'd500000000 && round_count > 0) 
-                            begin
-                                count <= 0;
-                                // LÃ³gica para fazer piscar cada LED do padrÃ£o
-                                led <= pattern; // Acende todos os LEDs de acordo com o padrÃ£o
-                                led <= 4'b0; // Desliga todos os LEDs
-                                // Repete o processo para cada LED do padrÃ£o
-                            end
-                        count <= count + 1;
-                        // Passo 2: Seleciona aleatoriamente e faz piscar um dos LEDs
-                        if (round_count == 0) // Apenas na primeira rodada
-                            begin
-                                // Inicializa o contador limite
-                                reg [1:0] loop_limit;
-                                loop_limit = 4;
-
-                                // Seleciona um LED com base no contador
-                                rnd_sel = rnd_sel_count % 4;
-
-                                // Limite de iterações para garantir a terminação do loop
-                                while (pattern[rnd_sel] == 1 && loop_limit < 4)
+        else
+            if (count_round == 3'b0)        // Round 0
+                begin
+                    for (i = 0; i < 4; i = i + 1)
+                        begin
+                            rnd_sel = lfsr[1:0]; // Select a random LED based on 2 LSBs of LFSR
+                            subconjunto[rnd_sel] = 1; // Seleciona um LED aleatoriamente
+                            padrao[i*4 +: 4] = subconjunto; // Atualiza a matriz de saída com o subconjunto
+                            subconjunto = 4'b0; // Reset subset for the next iteration
+                            lfsr = lfsr ^ (lfsr << 1) ^ (lfsr << 2) ^ (lfsr << 3); // Update LFSR
+                        end
+                    count_round <= count_round + 1;     // Go to next round
+                end
+            else                            // Round 1, 2, 3
+                begin
+                    if (count == 25'd50000000 && count_round == 1)      // 1s
+                        begin
+                            for (i = 0; i < 4; i = i + 1)   // Update LEDs based on previous round
                                 begin
-                                    rnd_sel_count <= rnd_sel_count + 1;
-                                    rnd_sel = rnd_sel_count % 4;
-                                    loop_limit = loop_limit - 1;
+                                    subconjunto = padrao[i*4 +: 4]; // Get subset from previous round
+                                    led = subconjunto; // Atualiza a matriz de saída com o subconjunto
+                                    subconjunto = 4'b0; // Reset subset for the next iteration
                                 end
-
-                                pattern[rnd_sel] <= 1; // Adiciona o LED ao padrão
-                                pattern_pos <= 3'b0;
-                            end
-                    end
-            end
+                            count_round <= count_round + 1;     // Go to next round
+                            count <= 26'd0;     // Reset counter for 1s
+                        end
+                end
+            count <= count + 1;     // Increment counter for 1s            
     end
 endmodule
