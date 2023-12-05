@@ -1,3 +1,8 @@
+// # MIT License
+// # Copyright (c) [2023] [Gabriel Rosa Dias] [Pedro Antônio]
+// # See LICENSE file for full license text.
+
+
 module game_leds_x_buttons (
     input osc_clk,           // Sinal de clock
     input reset_n,           // Sinal de reset
