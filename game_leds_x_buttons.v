@@ -7,7 +7,7 @@ module game_leds_x_buttons (
     input osc_clk,           // Sinal de clock
     input reset_n,           // Sinal de reset
     input [3:0] button,      // Botões (um para cada LED)
-    output reg [3:0] led    // LEDs (um para cada botÃ£o)
+    output reg [3:0] led    // LEDs (um para cada botão)
 );
 
 integer i;
@@ -19,8 +19,8 @@ reg [3:0] subconjunto;
 reg [2:0] rnd_sel;          // Seleção aleatória de LEDs
 reg [2:0] count_round;      // Contador de rodadas
 
-// Clock com uma frequência de 1/50 MHz=T  T=20×10 −9s
-// Quantidade de ciclos para 1s: 1/20×10 −9s=50×10 6 ciclos
+// Clock com uma frequência de 1/50 MHz=T  T=20×10 -9s
+// Quantidade de ciclos para 1s: 1/20×10 -9s=50×10 6 ciclos
 reg [25:0] count;           // Contador de tempo para contar até 50000000
 reg [15:0] lfsr;            // Linear Feedback Shift Register for random number generation
 
@@ -62,6 +62,16 @@ always @(posedge osc_clk or posedge reset_n)
                             count <= 26'd0;     // Reset counter for 1s
                         end
                 end
-            count <= count + 1;     // Increment counter for 1s            
-    end
+                if (count_round == 3'b1)   // Round 1, Usuário escolhe LEDs
+                   begin
+                    if (button[0] || button[1] || button[2] || button[3]) begin
+                        entrada_usuario[count_round - 1] = button;
+                    end
+                    if (count == 25'd50000000) begin
+                        count_round <= count_round + 1;    // Go to next round
+                        count <= 26'd0;     // Reset counter for 1s
+                    end
+               count <= count + 1;     // Increment counter for 1s 
+             end
+      end
 endmodule
