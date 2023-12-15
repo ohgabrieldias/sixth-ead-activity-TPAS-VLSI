@@ -4,7 +4,7 @@
 
 `timescale 1ns/1ns
 
-module tb_game_leds_x_buttons;
+module game_leds_x_buttons_top;
 
   // Parameters
   parameter WIDTH = 3;
@@ -14,9 +14,10 @@ module tb_game_leds_x_buttons;
   reg reset_n;
   reg [WIDTH:0] button;
   wire [WIDTH:0] led;
+  
 
   // Instantiate the module
-  game_leds_x_buttons #(WIDTH) dut (
+  game_leds_x_buttons #(WIDTH) uut (
     .osc_clk(osc_clk),
     .reset_n(reset_n),
     .button(button),
@@ -26,7 +27,7 @@ module tb_game_leds_x_buttons;
   // Clock generation
   initial begin
     osc_clk = 0;
-    forever #5 osc_clk = ~osc_clk;
+    forever #10 osc_clk = ~osc_clk;
   end
 
   // Reset generation
