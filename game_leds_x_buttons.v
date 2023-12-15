@@ -61,7 +61,7 @@ always @(posedge osc_clk)
                             end
 
                             // led = subconjunto;    // testar
-                            padrao[i*4 +: 4] = subconjunto; // Atualiza a matriz de saÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­da com o subconjunto
+                            padrao[i*4 +: 4] = subconjunto; // Atualiza a vetor de sai­da com o subconjunto
                             tmp =  padrao[i*4 +: 4];
                             led = tmp;
                             count <= 26'd0;     // Reset counter for 1s
@@ -69,36 +69,34 @@ always @(posedge osc_clk)
                         end
                     else
                         count <= count + 1;
-                        if (i == 4)
+                        if (i == 4)     // Se já gerou os 4 padrões, vai para a próxima rodada
                             begin
                                 count_round <= 3'b1;
                                 count <= 26'd0;     // Reset counter for 1s
                             end
                 end
             else if (count_round == 3'b1)
-             begin
-             led <= 4'b0000;
-             i = 0;
-        if (count == 50000000 && i < 4)  // round 1 (usuário tenta repetir o padrão, um padrão a cada 1 s)
-            begin
-                count <= 26'd0;  // Reset counter for 1s
-                entrada_usuario[i*4 +: 4] <= button;
-                // Blink the LED associated with the pressed button
-                led[button] <= ~led[button];
+                begin
+                    i = 0;
+                    if (count == 50000000 && i < 4)  // round 1 (usuário tenta repetir o padrão, um padrão a cada 1 s)
+                        begin
+                            count <= 26'd0;  // Reset counter for 1s
+                            entrada_usuario[i*4 +: 4] <= button;
+                            // Blink the LED associated with the pressed button
+                            led[button] <= ~led[button];
 
-                if (entrada_usuario[i*4 +: 4] == padrao[i*4 +: 4]) begin
-                    qtd_digitos_corretos <= qtd_digitos_corretos + 1;
-                end
+                            if (entrada_usuario[i*4 +: 4] == padrao[i*4 +: 4]) begin
+                                qtd_digitos_corretos <= qtd_digitos_corretos + 1;
+                            end
 
-                i = i + 1;
-            end
-        else
-            begin
-                count <= count + 1;
-                count_round <= 3'b10;
-                i = 0;
-            end
-      end
-
+                            i = i + 1;
+                        end
+                    else
+                        begin
+                            count <= count + 1;
+                            count_round <= 3'b10;
+                            i = 0;
+                        end
+                    end
 end
 endmodule

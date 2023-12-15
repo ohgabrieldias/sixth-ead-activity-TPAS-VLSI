@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
 <LOG_ROOT>
 	<PROJECT NAME="sixth-ead-activity-TPAS-VLSI">
+		<CBX_INST_ENTRY INSTANCE_NAME="|game_leds_x_buttons|lpm_mult:Mult0|multcore:mult_core|mpar_add:padder|lpm_add_sub:adder[0]" CBX_FILE_NAME="add_sub_1eh.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|game_leds_x_buttons|lpm_mult:Mult0|multcore:mult_core|mpar_add:padder|lpm_add_sub:adder[1]" CBX_FILE_NAME="add_sub_1eh.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|game_leds_x_buttons|lpm_mult:Mult0|multcore:mult_core|mpar_add:padder|mpar_add:sub_par_add|lpm_add_sub:adder[0]" CBX_FILE_NAME="add_sub_cfh.tdf"/>
 	</PROJECT>
 </LOG_ROOT>
